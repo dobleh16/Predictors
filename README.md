@@ -1,4 +1,4 @@
-# ⚽ Predictors
+# Predictors
 
 Predictors is a web application that allows users to make sports predictions and track their performance over time.  
 Built with **React + Firebase**, it provides secure authentication, real-time data storage, and a smooth user experience.
