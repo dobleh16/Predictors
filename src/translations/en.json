@@ -62,8 +62,8 @@
   "soccer_away_losses": "Away losses",
   "soccer_away_goals": "Total goals (away)",
   "soccer_calculate_winner": "Calculate Winner",
-  "soccer_result_local": "The team that should win is: {{team}}\n\nThe average goals are {{avgGoals}} for this match.",
-  "soccer_result_visitor": "The team that should win is: {{team}}\n\nThe average goals are {{avgGoals}} for this match.",
+  "soccer_result_local": "The team that should win is: {{team}} or at least draw.\n\nThe average goals are {{avgGoals}} for this match.",
+  "soccer_result_visitor": "The team that should win is: {{team}} or at least draw.\n\nThe average goals are {{avgGoals}} for this match.",
   "soccer_result_draw": "The match is predicted to be a draw.\n\nThe average goals are {{avgGoals}} for this match.",
   "nfl_predictor_title": "NFL Predictor",
   "nfl_stats_link": "TEAMS STATS",
@@ -80,5 +80,7 @@
   "recommendation": "Recommendation",
   "no_recommendation": "No recommendation",
   "home_team": "Home Team",
-  "away_team": "Away Team"
+  "away_team": "Away Team",
+  "soccer_winner_draw_format": "{{team}} or Draw (goal average: {{avgGoals}})",
+  "soccer_draw_only_format": "Draw (goal average: {{avgGoals}})"
 }

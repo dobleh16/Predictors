@@ -62,8 +62,8 @@
   "soccer_away_losses": "Partidos perdidos visitante",
   "soccer_away_goals": "Goles totales visitante",
   "soccer_calculate_winner": "Calcular Ganador",
-  "soccer_result_local": "El equipo que debería ganar es: {{team}}\n\nLa media de goles es {{avgGoals}} para este partido.",
-  "soccer_result_visitor": "El equipo que debería ganar es: {{team}}\n\nLa media de goles es {{avgGoals}} para este partido.",
+  "soccer_result_local": "El equipo que debería ganar es: {{team}} o al menos empatar.\n\nLa media de goles es {{avgGoals}} para este partido.",
+  "soccer_result_visitor": "El equipo que debería ganar es: {{team}} o al menos empatar.\n\nLa media de goles es {{avgGoals}} para este partido.",
   "soccer_result_draw": "El partido es un empate predicho.\n\nLa media de goles es {{avgGoals}} para este partido.",
   "nfl_predictor_title": "Predictor de la NFL",
   "nfl_stats_link": "ESTADÍSTICAS DE EQUIPOS",
@@ -80,5 +80,7 @@
   "recommendation": "Recomendación",
   "no_recommendation": "Sin recomendación",
   "home_team": "Equipo local",
-  "away_team": "Equipo visitante"
+  "away_team": "Equipo visitante",
+  "soccer_winner_draw_format": "{{team}} o Empate (promedio de goles: {{avgGoals}})",
+  "soccer_draw_only_format": "Empate (promedio de goles: {{avgGoals}})"
 }

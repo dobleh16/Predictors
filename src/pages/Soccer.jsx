@@ -1,9 +1,9 @@
 // src/pages/SoccerPredictor.jsx
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { doc, setDoc, arrayUnion } from "firebase/firestore"; // <-- Eliminado serverTimestamp
+import { doc, setDoc, arrayUnion } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
-import { useTranslation } from "react-i18next"; 
+import { useTranslation } from "react-i18next";
 
 export default function SoccerPredictor() {
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ export default function SoccerPredictor() {
 
   const [resultado, setResultado] = useState("");
   const [user] = useAuthState(auth);
-  const { t } = useTranslation(); 
+  const { t, i18n } = useTranslation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,8 +38,7 @@ export default function SoccerPredictor() {
     const docRef = doc(db, "predictions", userId);
 
     const newPrediction = {
-      // Usamos new Date() en lugar de serverTimestamp() para que sea compatible
-      timestamp: new Date().toISOString(), 
+      timestamp: new Date().toISOString(),
       deporte: "Soccer",
       match: `${equipoLocal} vs ${equipoVisitante}`,
       winner: prediccion,
@@ -115,24 +114,33 @@ export default function SoccerPredictor() {
 
     let mensaje = "";
     let equipoGanador = "";
-
+    
+    // Esta es la parte corregida para manejar correctamente las traducciones
     if (scoreLocal > scoreVisitante) {
       mensaje = t("soccer_result_local", {
         team: equipol,
         avgGoals: promedioGoles.toFixed(2),
       });
-      equipoGanador = `${equipol} (${t("soccer_avg_goals")}: ${promedioGoles.toFixed(2)})`;
+      equipoGanador = t("soccer_winner_draw_format", {
+        team: equipol,
+        avgGoals: promedioGoles.toFixed(2),
+      });
     } else if (scoreVisitante > scoreLocal) {
       mensaje = t("soccer_result_visitor", {
         team: equipov,
         avgGoals: promedioGoles.toFixed(2),
       });
-      equipoGanador = `${equipov} (${t("soccer_avg_goals")}: ${promedioGoles.toFixed(2)})`;
+      equipoGanador = t("soccer_winner_draw_format", {
+        team: equipov,
+        avgGoals: promedioGoles.toFixed(2),
+      });
     } else {
       mensaje = t("soccer_result_draw", {
         avgGoals: promedioGoles.toFixed(2),
       });
-      equipoGanador = `${t("soccer_draw")} (${t("soccer_avg_goals")}: ${promedioGoles.toFixed(2)})`;
+      equipoGanador = t("soccer_draw_only_format", {
+        avgGoals: promedioGoles.toFixed(2),
+      });
     }
 
     setResultado(mensaje);
@@ -143,7 +151,7 @@ export default function SoccerPredictor() {
     <div style={styles.container}>
       <h2>{t("soccer_predictor_title")}</h2>
       <h3>{t("soccer_predictor_subtitle")}</h3>
-      
+
       <div style={{ marginBottom: 20 }}>
         <p>
           ⚽️{" "}
