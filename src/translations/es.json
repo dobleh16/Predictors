@@ -107,7 +107,7 @@
   "nfl_ats_past_help_text": "El récord 'Against the Spread' (ATS) del equipo de la temporada pasada. Ingresa como porcentaje, ej., '60' para 60%.",
   "nfl_ats_current_help_text": "El récord 'Against the Spread' (ATS) del equipo en la temporada actual. Ingresa como porcentaje, ej., '75' para 75%.",
   "soccer_help_title": "Cómo usar el Predictor de Fútbol",
-  "soccer_help_intro": "Esta herramienta predice el ganador de un partido basándose en los datos históricos clave entre los dos equipos.",
+  "soccer_help_intro": "Esta herramienta predice el ganador de un partido basándose en los datos y estadisticas claves de ambos equipos",
   "soccer_team_help_text": "Ingresa el nombre del equipo local o visitante.",
   "soccer_matches_played_help_text": "El mismo número total de partidos jugados por ambos equipos. En caso tal un equipo tenga mas partidos que otro se pone el menor numero de partidos y se restan los goles despues de ese numero en comun, por ejemplo: Barcelona tiene 10 partidos Real Madrid 7 se pone 7 en partidos jugados y se restan los goles anotados por Barcelona en los partidos 8,9 y 10. Pones solo los goles que el Barcelona ha anotado hasta el partido 7 ",
   "soccer_wins_help_text": "El número total de victorias del equipo local o visitante en lo que va del torneo",

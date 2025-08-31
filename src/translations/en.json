@@ -107,7 +107,7 @@
   "nfl_ats_past_help_text": "The team's 'Against the Spread' (ATS) record from the previous season. Enter as a percentage, e.g., '60' for 60%.",
   "nfl_ats_current_help_text": "The team's 'Against the Spread' (ATS) record for the current season. Enter as a percentage, e.g., '75' for 75%.",
   "soccer_help_title": "How to Use the Soccer Predictor",
-  "soccer_help_intro": "This tool predicts the winner of a match based on key historical data between the two teams.",
+  "soccer_help_intro": "This tool predicts the winner of a match based on key data and stats by both teams.",
   "soccer_team_help_text": "Enter the name of the home or away team.",
   "soccer_matches_played_help_text": "The same total number of matches played by both teams. If one team has more matches than the other, enter the lowest number of matches and subtract the goals after that common number. For example: Barcelona has 10 matches, Real Madrid 7. Enter 7 for matches played, and subtract Barcelona's goals in matches 8, 9, and 10. Enter only the total goals Barcelona has scored up to match 7.",
   "soccer_wins_help_text": "The total number of wins for the home or away team so far in the tournament",
