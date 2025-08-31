@@ -131,6 +131,7 @@ const MLBPredictor = () => {
       winner,
       date: new Date().toISOString(),
       inputs,
+      result: "pending", // ¡Este es el campo que faltaba!
     };
 
     setResult({

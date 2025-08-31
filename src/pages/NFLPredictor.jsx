@@ -53,6 +53,7 @@ export default function NFLPredictor() {
       winner: predictionData.winner,
       recommendation: predictionData.recommendation,
       date: new Date().toISOString(),
+      result: "pending", // ¡Este es el campo que faltaba!
     };
 
     try {

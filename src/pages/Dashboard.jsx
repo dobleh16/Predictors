@@ -1,3 +1,5 @@
+// src/components/Dashboard.jsx
+
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebaseConfig";
@@ -60,11 +62,12 @@ const Dashboard = () => {
     }
   }, [searchTerm, predictions]);
 
-  const handleResultChange = async (index, result) => {
+  const handleResultChange = async (timestamp, result) => {
     if (!user) return;
     try {
-      const updatedPredictions = [...predictions];
-      updatedPredictions[index] = { ...updatedPredictions[index], result };
+      const updatedPredictions = predictions.map((p) =>
+        p.timestamp === timestamp ? { ...p, result } : p
+      );
       await updateDoc(doc(db, "predictions", user.uid), {
         predictions: updatedPredictions,
       });
@@ -102,7 +105,7 @@ const Dashboard = () => {
 
   const filteredPredictions = predictions.filter((p) => {
     const matchesSearch = p.match.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSport = filterSport === "all" || p.deporte.toLowerCase() === filterSport;
+    const matchesSport = filterSport === "all" || (p.deporte && p.deporte.toLowerCase() === filterSport);
     const matchesResult = filterResult === "all" || p.result === filterResult;
     
     const predictionDate = p.date ? new Date(p.date).toISOString().split('T')[0] : '';
@@ -202,8 +205,8 @@ const Dashboard = () => {
             <p>{t("no_matching_predictions")}</p>
           ) : (
             <ul style={styles.list}>
-              {sortedPredictions.map((p, index) => (
-                <li key={index} style={styles.listItem}>
+              {sortedPredictions.map((p) => (
+                <li key={p.timestamp} style={styles.listItem}>
                   <p>
                     <strong>{getSportIcon(p.deporte)} {p.deporte || 'MLB'}</strong> — <strong>{p.match}</strong>
                   </p>
@@ -223,27 +226,27 @@ const Dashboard = () => {
                   <label>
                     <input
                       type="radio"
-                      name={`result-${index}`}
+                      name={`result-${p.timestamp}`}
                       checked={p.result === "win"}
-                      onChange={() => handleResultChange(index, "win")}
+                      onChange={() => handleResultChange(p.timestamp, "win")}
                     />{" "}
                     {t("win")}
                   </label>
                   <label style={{ marginLeft: "10px" }}>
                     <input
                       type="radio"
-                      name={`result-${index}`}
+                      name={`result-${p.timestamp}`}
                       checked={p.result === "loss"}
-                      onChange={() => handleResultChange(index, "loss")}
+                      onChange={() => handleResultChange(p.timestamp, "loss")}
                     />{" "}
                     {t("loss")}
                   </label>
                   <label style={{ marginLeft: "10px" }}>
                     <input
                       type="radio"
-                      name={`result-${index}`}
+                      name={`result-${p.timestamp}`}
                       checked={p.result === "pending"}
-                      onChange={() => handleResultChange(index, "pending")}
+                      onChange={() => handleResultChange(p.timestamp, "pending")}
                     />{" "}
                     {t("pending")}
                   </label>
