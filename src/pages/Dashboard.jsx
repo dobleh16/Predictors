@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../firebaseConfig";
@@ -15,6 +14,12 @@ const Dashboard = () => {
   const [predictions, setPredictions] = useState([]);
   const [winCount, setWinCount] = useState(0);
   const [lossCount, setLossCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterSport, setFilterSport] = useState("all");
+  const [filterResult, setFilterResult] = useState("all");
+  const [filterDate, setFilterDate] = useState("");
+  // Nuevo estado para las sugerencias de búsqueda
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -40,6 +45,20 @@ const Dashboard = () => {
 
     return () => unsubscribe();
   }, [user]);
+
+  // useEffect para manejar las sugerencias
+  useEffect(() => {
+    if (searchTerm.length > 1) {
+      const uniqueMatches = [...new Set(
+        predictions
+          .filter(p => p.match.toLowerCase().includes(searchTerm.toLowerCase()))
+          .map(p => p.match)
+      )];
+      setSuggestions(uniqueMatches);
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchTerm, predictions]);
 
   const handleResultChange = async (index, result) => {
     if (!user) return;
@@ -67,20 +86,36 @@ const Dashboard = () => {
   const accuracy =
     totalPredictions > 0 ? ((winCount / totalPredictions) * 100).toFixed(2) : 0;
   
-  // Helper function to get the correct icon based on the sport
   const getSportIcon = (sport) => {
-    // Si la predicción no tiene un deporte definido, inferimos que es de MLB.
-    // Esta es una solución temporal hasta que el predictor de MLB se actualice.
     if (!sport) return "⚾️"; 
     switch (sport.toLowerCase()) {
       case "mlb":
         return "⚾️";
       case "soccer":
         return "⚽️";
+      case "nfl":
+        return "🏈";
       default:
         return "🏟️";
     }
   };
+
+  const filteredPredictions = predictions.filter((p) => {
+    const matchesSearch = p.match.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSport = filterSport === "all" || p.deporte.toLowerCase() === filterSport;
+    const matchesResult = filterResult === "all" || p.result === filterResult;
+    
+    const predictionDate = p.date ? new Date(p.date).toISOString().split('T')[0] : '';
+    const matchesDate = filterDate === "" || predictionDate === filterDate;
+    
+    return matchesSearch && matchesSport && matchesResult && matchesDate;
+  });
+
+  const sortedPredictions = [...filteredPredictions].sort((a, b) => {
+    const dateA = a.date ? new Date(a.date) : new Date(0);
+    const dateB = b.date ? new Date(b.date) : new Date(0);
+    return dateB - dateA;
+  });
 
   return (
     <div style={styles.container}>
@@ -109,41 +144,82 @@ const Dashboard = () => {
           </div>
 
           <h2>{t("your_predictions")}</h2>
-          {predictions.length === 0 ? (
-            <p>{t("no_predictions_saved")}</p>
+          
+          <div style={styles.filterContainer}>
+            <div style={styles.searchContainer}>
+              <input
+                type="text"
+                placeholder={t("search_predictions")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={styles.searchInput}
+              />
+              {suggestions.length > 0 && (
+                <ul style={styles.suggestionsList}>
+                  {suggestions.map((suggestion, index) => (
+                    <li
+                      key={index}
+                      onClick={() => {
+                        setSearchTerm(suggestion);
+                        setSuggestions([]); // Limpia las sugerencias al seleccionar una
+                      }}
+                    >
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <select
+              value={filterSport}
+              onChange={(e) => setFilterSport(e.target.value)}
+              style={styles.selectInput}
+            >
+              <option value="all">{t("all_sports")}</option>
+              <option value="mlb">{t("mlb")}</option>
+              <option value="nfl">{t("nfl")}</option>
+              <option value="soccer">{t("soccer")}</option>
+            </select>
+            <select
+              value={filterResult}
+              onChange={(e) => setFilterResult(e.target.value)}
+              style={styles.selectInput}
+            >
+              <option value="all">{t("all_results")}</option>
+              <option value="pending">{t("pending")}</option>
+              <option value="win">{t("win")}</option>
+              <option value="loss">{t("loss")}</option>
+            </select>
+            <input
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              style={styles.selectInput}
+            />
+          </div>
+          
+          {sortedPredictions.length === 0 ? (
+            <p>{t("no_matching_predictions")}</p>
           ) : (
             <ul style={styles.list}>
-              {predictions.map((p, index) => (
+              {sortedPredictions.map((p, index) => (
                 <li key={index} style={styles.listItem}>
-                  {/* 🏟 Deporte y partido */}
                   <p>
                     <strong>{getSportIcon(p.deporte)} {p.deporte || 'MLB'}</strong> — <strong>{p.match}</strong>
                   </p>
-
-                  {/* 🔮 Ganador - MODIFIED TO HANDLE MULTIPLE LINES */}
                   <p>
                     {t("winner")}:{" "}
-                    {p.winner && p.winner.split("\n").map((line, idx) => (
-                      <span
-                        key={idx}
-                        style={{
-                          display: "block",
-                          margin: "0 0 5px 0",
-                          fontStyle: "italic",
-                        }}
-                      >
-                        {line}
-                      </span>
-                    ))}
+                    <strong>{p.winner}</strong>
                   </p>
-
-                  {/* 📅 Fecha */}
+                  {p.recommendation && (
+                    <p style={{ fontStyle: "italic", fontSize: "14px" }}>
+                      {p.recommendation}
+                    </p>
+                  )}
                   {p.date && (
                     <small>📅 {new Date(p.date).toLocaleString()}</small>
                   )}
                   <br />
-
-                  {/* ✅ / ❌ Resultado real */}
                   <label>
                     <input
                       type="radio"
@@ -161,6 +237,15 @@ const Dashboard = () => {
                       onChange={() => handleResultChange(index, "loss")}
                     />{" "}
                     {t("loss")}
+                  </label>
+                  <label style={{ marginLeft: "10px" }}>
+                    <input
+                      type="radio"
+                      name={`result-${index}`}
+                      checked={p.result === "pending"}
+                      onChange={() => handleResultChange(index, "pending")}
+                    />{" "}
+                    {t("pending")}
                   </label>
                 </li>
               ))}
@@ -218,6 +303,46 @@ const styles = {
     backgroundColor: "#f0f0f0",
     borderRadius: "4px",
   },
+  filterContainer: {
+    marginBottom: 15,
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 10,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  searchInput: {
+    padding: "8px 12px",
+    border: "1px solid #d9d9d9",
+    borderRadius: 5,
+    flexGrow: 1
+  },
+  selectInput: {
+    padding: "8px 12px",
+    border: "1px solid #d9d9d9",
+    borderRadius: 5,
+  },
+  searchContainer: {
+    position: 'relative',
+    flexGrow: 1,
+  },
+  suggestionsList: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    border: '1px solid #d9d9d9',
+    borderRadius: 5,
+    listStyle: 'none',
+    padding: 0,
+    margin: '4px 0 0 0',
+    zIndex: 100
+  },
+  suggestionsItem: {
+    padding: '8px 12px',
+    cursor: 'pointer',
+  }
 };
 
 export default Dashboard;

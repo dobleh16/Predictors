@@ -1,4 +1,5 @@
 // src/components/MLBPredictor.jsx
+
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { collection, addDoc, doc, updateDoc, setDoc, arrayUnion } from "firebase/firestore";
@@ -49,7 +50,8 @@ const MLBPredictor = () => {
 
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
-  const [predictions, setPredictions] = useState([]); // Estado para guardar predicciones
+  const [predictions, setPredictions] = useState([]);
+  const [showHelp, setShowHelp] = useState(false); // Nuevo estado para el modal de ayuda
 
   const handleChange = (e) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -124,11 +126,11 @@ const MLBPredictor = () => {
 
     const prediction = {
       timestamp: new Date().toISOString(),
-      deporte: "MLB", // <-- **ESTE ES EL CAMBIO**
+      deporte: "MLB",
       match: `${teamHome.toUpperCase()} vs ${teamAway.toUpperCase()}`,
       winner,
       date: new Date().toISOString(),
-      inputs, // puedes guardar los inputs si quieres
+      inputs,
     };
 
     setResult({
@@ -136,7 +138,6 @@ const MLBPredictor = () => {
       winner,
     });
 
-    // Guardar en Firestore
     if (!auth.currentUser) {
       setError("User not authenticated");
       return;
@@ -150,11 +151,9 @@ const MLBPredictor = () => {
         predictions: arrayUnion(prediction),
       });
     } catch (e) {
-      // Si el documento no existe, lo crea
       await setDoc(docRef, { predictions: [prediction] });
     }
 
-    // Limpiar formulario después de guardar
     setInputs({
       teamHome: "",
       teamAway: "",
@@ -171,7 +170,12 @@ const MLBPredictor = () => {
 
   return (
     <div style={styles.container}>
-      <h2>{t("mlb_predictor_title")}</h2>
+      <div style={styles.header}>
+        <h2>{t("mlb_predictor_title")}</h2>
+        <span style={styles.helpIcon} onClick={() => setShowHelp(true)}>
+          ❓
+        </span>
+      </div>
 
       <div style={{ marginBottom: 20 }}>
         <p>
@@ -326,6 +330,45 @@ const MLBPredictor = () => {
           </ul>
         </div>
       )}
+
+      {/* Modal de ayuda */}
+      {showHelp && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <span style={styles.closeButton} onClick={() => setShowHelp(false)}>
+              &times;
+            </span>
+            <h3>{t("mlb_help_title")}</h3>
+            <p>{t("mlb_help_intro")}</p>
+            <ul style={styles.helpList}>
+              <li>
+                <strong>{t("home_team_name")} / {t("away_team_name")}:</strong> {t("mlb_team_name_help_text")}
+              </li>
+              <li>
+                <strong>{t("last_10_games_record_home")} / {t("last_10_games_record_away")}:</strong> {t("mlb_last_10_help_text")}
+              </li>
+              <li>
+                <strong>{t("pitcher_record_home")} / {t("pitcher_record_away")}:</strong> {t("mlb_pitcher_record_help_text")}
+              </li>
+              <li>
+                <strong>{t("season_record_home")} / {t("season_record_away")}:</strong> {t("mlb_season_record_help_text")}
+              </li>
+              <li>
+                <strong>{t("era_pitcher_home")} / {t("era_pitcher_away")}:</strong> {t("mlb_era_help_text")}
+              </li>
+            </ul>
+            <p style={styles.helpLinks}>
+              <a href="https://www.mlb.com/standings" target="_blank" rel="noopener noreferrer">
+                {t("team_stats_link")}
+              </a>
+              {" / "}
+              <a href="https://www.mlb.com/probable-pitchers" target="_blank" rel="noopener noreferrer">
+                {t("pitcher_stats_link")}
+              </a>
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -341,6 +384,16 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: 12,
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  helpIcon: {
+    fontSize: "1.5rem",
+    cursor: "pointer",
+    marginRight: '10px'
   },
   button: {
     padding: "10px 20px",
@@ -360,6 +413,40 @@ const styles = {
     padding: 15,
     backgroundColor: "#e6f7ff",
     borderRadius: 5,
+  },
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    maxWidth: "400px",
+    position: "relative",
+    textAlign: "left",
+  },
+  closeButton: {
+    position: "absolute",
+    top: "10px",
+    right: "15px",
+    fontSize: "1.5rem",
+    cursor: "pointer",
+  },
+  helpList: {
+    paddingLeft: "20px",
+  },
+  helpLinks: {
+    textAlign: "center",
+    marginTop: "20px",
   },
 };
 

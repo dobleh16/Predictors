@@ -31,6 +31,7 @@ export default function NFLPredictor() {
 
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+  const [showHelp, setShowHelp] = useState(false); // Nuevo estado para el modal de ayuda
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -191,6 +192,16 @@ export default function NFLPredictor() {
       flexDirection: "column",
       gap: 12,
     },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    helpIcon: {
+      fontSize: "1.5rem",
+      cursor: "pointer",
+      marginRight: '10px'
+    },
     inputGroup: {
       marginBottom: 5,
     },
@@ -217,11 +228,51 @@ export default function NFLPredictor() {
       backgroundColor: "#e6f7ff",
       borderRadius: 5,
     },
+    modalOverlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+    },
+    modalContent: {
+      backgroundColor: "white",
+      padding: "20px",
+      borderRadius: "8px",
+      maxWidth: "400px",
+      position: "relative",
+      textAlign: "left",
+    },
+    closeButton: {
+      position: "absolute",
+      top: "10px",
+      right: "15px",
+      fontSize: "1.5rem",
+      cursor: "pointer",
+    },
+    helpList: {
+      paddingLeft: "20px",
+    },
+    helpLinks: {
+      textAlign: "center",
+      marginTop: "20px",
+    },
   };
 
   return (
     <div style={styles.container}>
-      <h2>{t("nfl_predictor_title")}</h2>
+      <div style={styles.header}>
+        <h2>{t("nfl_predictor_title")}</h2>
+        <span style={styles.helpIcon} onClick={() => setShowHelp(true)}>
+          ❓
+        </span>
+      </div>
+
       <div style={{ marginBottom: 20 }}>
         <p>
           🏈{" "}
@@ -366,7 +417,7 @@ export default function NFLPredictor() {
         placeholder={t("spread_value")}
         type="text"
         name="spreadValueAway"
-        value={formData.spreadValueAway}
+        value={formData.spreadAway}
         onChange={handleChange}
         style={styles.input}
       />
@@ -402,6 +453,58 @@ export default function NFLPredictor() {
           <p>
             {result.recommendation}
           </p>
+        </div>
+      )}
+
+      {/* Modal de ayuda */}
+      {showHelp && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <span style={styles.closeButton} onClick={() => setShowHelp(false)}>
+              &times;
+            </span>
+            <h3>{t("nfl_help_title")}</h3>
+            <p>{t("nfl_help_intro")}</p>
+            <ul style={styles.helpList}>
+              <li>
+                <strong>{t("home_team")} / {t("away_team")}:</strong> {t("nfl_team_help_text")}
+              </li>
+              <li>
+                <strong>{t("last_5_games_record")}:</strong> {t("nfl_last_5_help_text")}
+              </li>
+              <li>
+                <strong>{t("season_record")}:</strong> {t("nfl_season_help_text")}
+              </li>
+              <li>
+                <strong>{t("moneyline_public_betting")}:</strong> {t("nfl_moneyline_help_text")}
+              </li>
+              <li>
+                <strong>{t("spread_public_betting")}:</strong> {t("nfl_spread_public_help_text")}
+              </li>
+              <li>
+                <strong>{t("spread_value")}:</strong> {t("nfl_spread_value_help_text")}
+              </li>
+              <li>
+                <strong>{t("ats_past_season")}:</strong> {t("nfl_ats_past_help_text")}
+              </li>
+              <li>
+                <strong>{t("ats_current_season")}:</strong> {t("nfl_ats_current_help_text")}
+              </li>
+            </ul>
+            <p style={styles.helpLinks}>
+              <a href="https://www.espn.com/nfl/standings/_/seasontype/2" target="_blank" rel="noopener noreferrer">
+                {t("nfl_stats_link")}
+              </a>
+              {" / "}
+              <a href="https://www.teamrankings.com/nfl/trends/ats_trends/" target="_blank" rel="noopener noreferrer">
+                {t("nfl_ats_link")}
+              </a>
+              {" / "}
+              <a href="https://www.actionnetwork.com/nfl/public-betting" target="_blank" rel="noopener noreferrer">
+                {t("nfl_public_betting_link")}
+              </a>
+            </p>
+          </div>
         </div>
       )}
     </div>

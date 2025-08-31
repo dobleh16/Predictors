@@ -23,6 +23,7 @@ export default function SoccerPredictor() {
   const [resultado, setResultado] = useState("");
   const [user] = useAuthState(auth);
   const { t, i18n } = useTranslation();
+  const [showHelp, setShowHelp] = useState(false); // Nuevo estado para el modal de ayuda
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -147,9 +148,97 @@ export default function SoccerPredictor() {
     await savePredictionToDashboard(equipoGanador, equipol, equipov);
   };
 
+  const styles = {
+    container: {
+      maxWidth: 450,
+      margin: "auto",
+      padding: 20,
+      backgroundColor: "#fff",
+      borderRadius: 8,
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+      display: "flex",
+      flexDirection: "column",
+      gap: 12,
+    },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    helpIcon: {
+      fontSize: "1.5rem",
+      cursor: "pointer",
+      marginRight: '10px'
+    },
+    inputGroup: {
+      marginBottom: 5,
+    },
+    input: {
+      width: "100%",
+      padding: "8px 12px",
+      border: "1px solid #d9d9d9",
+      borderRadius: 5,
+      boxSizing: "border-box",
+    },
+    button: {
+      padding: "10px 20px",
+      backgroundColor: "#1890ff",
+      color: "#fff",
+      border: "none",
+      borderRadius: 5,
+      cursor: "pointer",
+      marginTop: 10,
+      width: "100%",
+    },
+    result: {
+      marginTop: 10,
+      padding: 15,
+      backgroundColor: "#e6f7ff",
+      borderRadius: 5,
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+    },
+    modalOverlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+    },
+    modalContent: {
+      backgroundColor: "white",
+      padding: "20px",
+      borderRadius: "8px",
+      maxWidth: "400px",
+      position: "relative",
+      textAlign: "left",
+    },
+    closeButton: {
+      position: "absolute",
+      top: "10px",
+      right: "15px",
+      fontSize: "1.5rem",
+      cursor: "pointer",
+    },
+    helpList: {
+      paddingLeft: "20px",
+    },
+  };
+
   return (
     <div style={styles.container}>
-      <h2>{t("soccer_predictor_title")}</h2>
+      <div style={styles.header}>
+        <h2>{t("soccer_predictor_title")}</h2>
+        <span style={styles.helpIcon} onClick={() => setShowHelp(true)}>
+          ❓
+        </span>
+      </div>
+      
       <h3>{t("soccer_predictor_subtitle")}</h3>
 
       <div style={{ marginBottom: 20 }}>
@@ -279,6 +368,39 @@ export default function SoccerPredictor() {
         {t("soccer_calculate_winner")}
       </button>
       {resultado && <pre style={styles.result}>{resultado}</pre>}
+
+      {/* Modal de ayuda */}
+      {showHelp && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <span style={styles.closeButton} onClick={() => setShowHelp(false)}>
+              &times;
+            </span>
+            <h3>{t("soccer_help_title")}</h3>
+            <p>{t("soccer_help_intro")}</p>
+            <ul style={styles.helpList}>
+              <li>
+                <strong>{t("soccer_home_team_name")} / {t("soccer_away_team_name")}:</strong> {t("soccer_team_help_text")}
+              </li>
+              <li>
+                <strong>{t("soccer_matches_played")}:</strong> {t("soccer_matches_played_help_text")}
+              </li>
+              <li>
+                <strong>{t("soccer_home_wins")} / {t("soccer_away_wins")}:</strong> {t("soccer_wins_help_text")}
+              </li>
+              <li>
+                <strong>{t("soccer_home_draws")} / {t("soccer_away_draws")}:</strong> {t("soccer_draws_help_text")}
+              </li>
+              <li>
+                <strong>{t("soccer_home_losses")} / {t("soccer_away_losses")}:</strong> {t("soccer_losses_help_text")}
+              </li>
+              <li>
+                <strong>{t("soccer_home_goals")} / {t("soccer_away_goals")}:</strong> {t("soccer_goals_help_text")}
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -294,6 +416,16 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: 12,
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  helpIcon: {
+    fontSize: "1.5rem",
+    cursor: "pointer",
+    marginRight: '10px'
   },
   inputGroup: {
     marginBottom: 5,
@@ -322,5 +454,35 @@ const styles = {
     borderRadius: 5,
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
+  },
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "8px",
+    maxWidth: "400px",
+    position: "relative",
+    textAlign: "left",
+  },
+  closeButton: {
+    position: "absolute",
+    top: "10px",
+    right: "15px",
+    fontSize: "1.5rem",
+    cursor: "pointer",
+  },
+  helpList: {
+    paddingLeft: "20px",
   },
 };
