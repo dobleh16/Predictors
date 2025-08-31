@@ -110,8 +110,8 @@
   "soccer_help_intro": "Esta herramienta predice el ganador de un partido basándose en los datos históricos clave entre los dos equipos.",
   "soccer_team_help_text": "Ingresa el nombre del equipo local o visitante.",
   "soccer_matches_played_help_text": "El mismo número total de partidos jugados por ambos equipos. En caso tal un equipo tenga mas partidos que otro se pone el menor numero de partidos y se restan los goles despues de ese numero en comun, por ejemplo: Barcelona tiene 10 partidos Real Madrid 7 se pone 7 en partidos jugados y se restan los goles anotados por Barcelona en los partidos 8,9 y 10. Pones solo los goles que el Barcelona ha anotado hasta el partido 7 ",
-  "soccer_wins_help_text": "El número de victorias del equipo local o visitante en todos los partidos entre sí.",
-  "soccer_draws_help_text": "El número de empates entre los dos equipos.",
-  "soccer_losses_help_text": "El número de derrotas del equipo local o visitante uno contra el otro.",
-  "soccer_goals_help_text": "El número total de goles anotados por el equipo local o visitante en todos los partidos entre sí."
+  "soccer_wins_help_text": "El número total de victorias del equipo local o visitante en lo que va del torneo",
+  "soccer_draws_help_text": "El número total de empates del equipo local o visitante en lo que va del torneo.",
+  "soccer_losses_help_text": "El número total de derrotas del equipo local o visitante en lo que va del torneo.",
+  "soccer_goals_help_text": "El número total de goles anotados por el equipo local o visitante en lo que va del torneo"
 }

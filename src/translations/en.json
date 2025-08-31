@@ -110,8 +110,8 @@
   "soccer_help_intro": "This tool predicts the winner of a match based on key historical data between the two teams.",
   "soccer_team_help_text": "Enter the name of the home or away team.",
   "soccer_matches_played_help_text": "The same total number of matches played by both teams. If one team has more matches than the other, enter the lowest number of matches and subtract the goals after that common number. For example: Barcelona has 10 matches, Real Madrid 7. Enter 7 for matches played, and subtract Barcelona's goals in matches 8, 9, and 10. Enter only the total goals Barcelona has scored up to match 7.",
-  "soccer_wins_help_text": "The number of wins for the home or away team in all matches against each other.",
-  "soccer_draws_help_text": "The number of draws between the two teams.",
-  "soccer_losses_help_text": "The number of losses for the home or away team against each other.",
-  "soccer_goals_help_text": "The total number of goals scored by the home or away team in all matches against each other."
+  "soccer_wins_help_text": "The total number of wins for the home or away team so far in the tournament",
+  "soccer_draws_help_text": "The total number of draws for the home or away team so far in the tournament.",
+  "soccer_losses_help_text": "The total number of losses for the home or away team so far in the tournament.",
+  "soccer_goals_help_text": "The total number of goals scored by the home or away team so far in the tournament"
 }
